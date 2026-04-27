@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>LMS Student Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f3f0;
+  --surface:#ffffff;
+  --sidebar-bg:#ffffff;
+  --sidebar-hover:rgba(109,40,217,0.05);
+  --sidebar-active:rgba(109,40,217,0.1);
+  --sidebar-active-border:#7c3aed;
+  --text:#1a1a2e;
+  --muted:#6b7280;
+  --faint:#ede9fe;
+  --border:rgba(0,0,0,0.07);
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --accent-light:#ede9fe;
+  --radius:12px;--radius-sm:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow:hidden}
+.layout{display:flex;height:100vh}
+
+/* sidebar */
+.sidebar{width:240px;flex-shrink:0;background:var(--sidebar-bg);display:flex;flex-direction:column;height:100vh;position:relative;overflow:hidden;z-index:100;border-right:1px solid rgba(0,0,0,0.07)}
+.sidebar::before{content:'';position:absolute;top:-60px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,0.06) 0%,transparent 70%);pointer-events:none}
+.sidebar::after{content:'';position:absolute;bottom:60px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(167,139,250,0.04) 0%,transparent 70%);pointer-events:none}
+.sidebar-logo{padding:22px 20px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,0.4)}
+.logo-icon svg{width:17px;height:17px;fill:#fff}
+.logo-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em}
+.logo-sub{font-size:9px;color:rgba(109,40,217,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:500}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:12px 12px}
+.sidebar-scroll::-webkit-scrollbar{width:0}
+.nav-section{font-size:9.5px;font-weight:600;color:rgba(0,0,0,0.3);letter-spacing:0.1em;text-transform:uppercase;padding:12px 8px 5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;color:#6b7280;font-size:13px;font-weight:500;margin:1px 0;transition:all 0.15s;position:relative;border-left:2px solid transparent}
+.nav-item:hover{background:var(--sidebar-hover);color:#1a1a2e;border-left-color:rgba(109,40,217,0.3)}
+.nav-item.active{background:var(--sidebar-active);color:#7c3aed;border-left-color:var(--sidebar-active-border)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:rgba(124,58,237,0.12);color:#7c3aed;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px}
+.nav-badge.red{background:rgba(220,38,38,0.1);color:#dc2626}
+.sidebar-footer{padding:14px 12px;border-top:1px solid rgba(0,0,0,0.06)}
+.user-card{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.15s}
+.user-card:hover{background:rgba(109,40,217,0.05)}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.user-name{font-size:12px;font-weight:600;color:#1a1a2e}
+.user-role{font-size:10px;color:#6b7280}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#10b981;margin-left:auto;box-shadow:0 0 0 2px rgba(16,185,129,0.3)}
+.logout-btn{width:100%;padding:8px 12px;border:1.5px solid rgba(0,0,0,0.07);background:transparent;border-radius:8px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;transition:all 0.15s;margin-top:12px}
+.logout-btn:hover{border-color:#dc2626;color:#dc2626}
+
+/* LOGOUT MODAL */
+.logout-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:999;align-items:center;justify-content:center}
+.logout-modal.visible{display:flex}
+.logout-modal-dialog{background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.2);width:90%;max-width:400px;padding:0;animation:slideUp 0.3s ease-out}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.logout-modal-header{padding:20px;border-bottom:1px solid rgba(0,0,0,0.07)}
+.logout-modal-title{font-size:16px;font-weight:700;color:#1a1a2e}
+.logout-modal-body{padding:20px;color:#6b7280;font-size:14px}
+.logout-modal-actions{display:flex;gap:12px;padding:20px;border-top:1px solid rgba(0,0,0,0.07)}
+.logout-modal-btn{flex:1;padding:10px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.logout-modal-btn.cancel{background:#f4f3f0;color:#6b7280}
+.logout-modal-btn.cancel:hover{background:#e8e7e4}
+.logout-modal-btn.confirm{background:#dc2626;color:#fff}
+.logout-modal-btn.confirm:hover{background:#b91c1c;transform:translateY(-1px)}
+
+.page-frame{flex:1;overflow:hidden}
+iframe{width:100%;height:100%;border:none}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SHELL SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 20 20"><path d="M10 2L3 7v11h14V7L10 2zm0 2.5l5 3.5v8H5V8l5-3.5z"/><rect x="7.5" y="11" width="5" height="5" rx="0.5"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">LMS Portal</div>
+        <div class="logo-sub">Student</div>
+      </div>
+    </div>
+
+    <div class="sidebar-scroll">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" data-page="student_dashboard.html">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-page="my_courses.html">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v10a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1zm1 3v7h10V5H3z"/><path d="M5 7h6v1.5H5z"/></svg>
+        My Courses
+      </div>
+      <div class="nav-item" data-page="timetable.html">
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M4 8h8M4 11h5"/></svg>
+        Timetable
+      </div>
+      <div class="nav-item" data-page="invoices.html">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2-1v9h8V3H4zm1 2h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/></svg>
+        Invoices
+        <span class="nav-badge red">1</span>
+      </div>
+      <div class="nav-item" data-page="profile.html">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        Profile
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">PS</div>
+        <div>
+          <div class="user-name">Priya Sharma</div>
+          <div class="user-role">Student</div>
+        </div>
+        <div class="status-dot"></div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- PAGE FRAME -->
+  <div class="page-frame">
+    <iframe id="pageFrame" src="student_dashboard.html"></iframe>
+  </div>
+</div>
+
+<!-- LOGOUT MODAL -->
+<div class="logout-modal" id="logoutModal">
+  <div class="logout-modal-dialog">
+    <div class="logout-modal-header">
+      <div class="logout-modal-title">Confirm Logout</div>
+    </div>
+    <div class="logout-modal-body">
+      Are you sure you want to logout? You'll need to sign in again to access your account.
+    </div>
+    <div class="logout-modal-actions">
+      <button class="logout-modal-btn cancel" onclick="closeLogoutModal()">Cancel</button>
+      <button class="logout-modal-btn confirm" onclick="confirmLogout()">Logout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const navItems = document.querySelectorAll('.nav-item[data-page]');
+const iframe = document.getElementById('pageFrame');
+
+// Inject CSS to hide sidebar in iframe
+iframe.addEventListener('load', function() {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (doc) {
+      const style = doc.createElement('style');
+      style.textContent = '.sidebar { display: none !important; } .layout { flex-direction: column; } .main { flex: 1; }';
+      doc.head.appendChild(style);
+    }
+  } catch(e) {
+    console.log('Cannot inject iframe CSS (cross-origin or not ready)');
+  }
+});
+
+navItems.forEach(item => {
+  item.addEventListener('click', function() {
+    const page = this.getAttribute('data-page');
+    iframe.src = page;
+    navItems.forEach(n => n.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+function logout() {
+  document.getElementById('logoutModal').classList.add('visible');
+}
+
+function closeLogoutModal() {
+  document.getElementById('logoutModal').classList.remove('visible');
+}
+
+function confirmLogout() {
+  localStorage.clear();
+  sessionStorage.clear();
+  globalThis.location.href = 'login.html';
+}
+</script>
+
+</body>
+</html>

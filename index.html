@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LMS Portal — Learn from Expert Mentors</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf9;
+  --surface:#ffffff;
+  --text:#0f0f1e;
+  --muted:#6b7280;
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --accent-light:#ede9fe;
+  --green:#10b981;
+  --blue:#3b82f6;
+  --border:rgba(0,0,0,0.06);
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+
+/* ═══ NAVIGATION ═══ */
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--text);text-decoration:none;font-family:'Sora',sans-serif;font-size:16px}
+.nav-logo-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center}
+.nav-logo-icon svg{width:14px;height:14px;fill:#fff}
+.nav-menu{display:flex;gap:32px;margin-left:auto;margin-right:32px}
+.nav-menu a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.2s}
+.nav-menu a:hover{color:var(--text)}
+.nav-cta{display:flex;gap:8px}
+.nav-signin{padding:8px 16px;border:1.5px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.nav-signin:hover{background:var(--accent-light)}
+.nav-join{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:20px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.nav-join:hover{background:#6d28d9;transform:translateY(-1px)}
+
+/* ═══ HERO SECTION ═══ */
+.hero{padding:100px 40px 80px;background:linear-gradient(135deg,#fafaf9 0%,#f3f0ff 50%,#ede9fe 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-300px;right:-200px;width:800px;height:800px;background:radial-gradient(circle,rgba(124,58,237,0.12) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-150px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(16,185,129,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+
+.hero-wrapper{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.hero-overline{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}
+.hero-title{font-family:'Sora',sans-serif;font-size:56px;font-weight:700;line-height:1.15;margin-bottom:20px;letter-spacing:-0.02em;color:var(--text)}
+.hero-title span{color:var(--accent);display:inline}
+.hero-subtitle{font-size:18px;color:var(--muted);margin-bottom:40px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.7}
+.hero-cta-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary-lg{padding:16px 40px;background:var(--accent);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary-lg:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,0.3)}
+.btn-secondary-lg{padding:16px 40px;background:var(--surface);border:2px solid var(--accent);color:var(--accent);border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary-lg:hover{background:var(--accent-light);transform:translateY(-2px)}
+
+/* ═══ HIGHLIGHTS SECTION ═══ */
+.highlights{padding:80px 40px;background:var(--surface)}
+.highlights-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px}
+.highlight-item{text-align:center}
+.highlight-icon{width:64px;height:64px;border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.highlight-item:nth-child(1) .highlight-icon{background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(167,139,250,0.1))}
+.highlight-item:nth-child(2) .highlight-icon{background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(52,211,153,0.1))}
+.highlight-item:nth-child(3) .highlight-icon{background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(96,165,250,0.1))}
+.highlight-item:nth-child(4) .highlight-icon{background:linear-gradient(135deg,rgba(217,119,6,0.1),rgba(251,146,60,0.1))}
+.highlight-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:10px}
+.highlight-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ═══ COURSES SECTION ═══ */
+.courses-section{padding:80px 40px;background:var(--bg)}
+.section-header{text-align:center;margin-bottom:60px}
+.section-title{font-family:'Sora',sans-serif;font-size:40px;font-weight:700;margin-bottom:16px}
+.section-subtitle{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto;line-height:1.6}
+
+.courses-container{max-width:1400px;margin:0 auto;position:relative}
+.courses-wrapper{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+
+.course-card{background:var(--surface);border-radius:16px;overflow:hidden;border:1.5px solid rgba(0,0,0,0.04);transition:all 0.3s;cursor:pointer;display:flex;flex-direction:column}
+.course-card:hover{transform:translateY(-8px);box-shadow:0 16px 48px rgba(0,0,0,0.12);border-color:var(--accent)}
+.course-header{height:160px;background:linear-gradient(120deg,#7c3aed 0%,#a78bfa 50%,#c4b5fd 100%);display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;overflow:hidden}
+.course-card:nth-child(2) .course-header{background:linear-gradient(120deg,#10b981 0%,#34d399 50%,#6ee7b7 100%)}
+.course-card:nth-child(3) .course-header{background:linear-gradient(120deg,#3b82f6 0%,#60a5fa 50%,#93c5fd 100%)}
+.course-card:nth-child(4) .course-header{background:linear-gradient(120deg,#f59e0b 0%,#fbbf24 50%,#fde68a 100%)}
+.course-card:nth-child(5) .course-header{background:linear-gradient(120deg,#ec4899 0%,#f472b6 50%,#fbcfe8 100%)}
+.course-card:nth-child(6) .course-header{background:linear-gradient(120deg,#06b6d4 0%,#22d3ee 50%,#a5f3fc 100%)}
+
+.course-body{padding:24px;flex:1;display:flex;flex-direction:column}
+.course-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:12px}
+.course-mentor{font-size:13px;color:var(--muted);margin-bottom:16px}
+.course-meta{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:16px;padding-top:16px;border-top:1px solid var(--border)}
+.course-meta span{display:flex;align-items:center;gap:4px}
+.course-cta{margin-top:auto}
+.course-btn{padding:10px 16px;background:var(--accent-light);color:var(--accent);border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;width:100%}
+.course-btn:hover{background:var(--accent);color:#fff}
+
+/* ═══ WHY CHOOSE US ═══ */
+.why-us{padding:80px 40px;background:var(--surface)}
+.why-us-wrapper{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.why-us-content h2{font-family:'Sora',sans-serif;font-size:40px;font-weight:700;margin-bottom:24px}
+.why-us-list{display:flex;flex-direction:column;gap:24px}
+.why-us-item{display:flex;gap:16px}
+.why-us-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-top:2px}
+.why-us-text h3{font-weight:700;margin-bottom:6px;font-size:15px}
+.why-us-text p{color:var(--muted);font-size:14px;line-height:1.6}
+.why-us-visual{height:400px;background:linear-gradient(120deg,#f3f0ff 0%,#ede9fe 100%);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:120px}
+
+/* ═══ TESTIMONIALS ═══ */
+.testimonials{padding:80px 40px;background:var(--bg)}
+.testimonials-wrapper{max-width:1200px;margin:0 auto}
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.testimonial-card{background:var(--surface);padding:32px;border-radius:16px;border:1.5px solid rgba(0,0,0,0.04);transition:all 0.2s}
+.testimonial-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+.testimonial-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.testimonial-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.testimonial-avatar:nth-child(1){background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.testimonial-avatar:nth-child(2){background:linear-gradient(135deg,#10b981,#34d399)}
+.testimonial-avatar:nth-child(3){background:linear-gradient(135deg,#3b82f6,#60a5fa)}
+.testimonial-info h3{font-weight:700;font-size:15px;margin-bottom:2px}
+.testimonial-info p{font-size:12px;color:var(--muted)}
+.testimonial-rating{color:#f59e0b;font-size:12px;margin-left:auto}
+.testimonial-text{font-size:14px;color:var(--muted);line-height:1.7;font-style:italic}
+.testimonial-highlight{color:var(--text);font-weight:600;font-style:normal}
+
+/* ═══ FINAL CTA ═══ */
+.final-cta{padding:100px 40px;background:linear-gradient(120deg,#2d1065 0%,#4c1d95 40%,#5b21b6 70%,#7c3aed 100%);text-align:center;color:#fff;position:relative;overflow:hidden}
+.final-cta::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.final-cta-content{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.final-cta-title{font-family:'Sora',sans-serif;font-size:42px;font-weight:700;margin-bottom:16px;line-height:1.2}
+.final-cta-subtitle{font-size:18px;opacity:0.9;margin-bottom:40px;line-height:1.6}
+.final-cta-btn{padding:16px 48px;background:#fff;color:var(--accent);border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.final-cta-btn:hover{background:#f5f3ff;transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,0.2)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--text);color:#fff;padding:40px;text-align:center;font-size:12px;opacity:0.7}
+footer a{color:rgba(255,255,255,0.8);text-decoration:none}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .nav-menu{display:none}
+  .hero{padding:60px 20px 40px}
+  .hero-title{font-size:32px}
+  .hero-subtitle{font-size:16px}
+  .highlights,.courses-section,.why-us,.testimonials,.final-cta{padding:40px 20px}
+  .section-title{font-size:28px}
+  .why-us-wrapper{grid-template-columns:1fr;gap:40px}
+  .why-us-visual{height:250px;font-size:80px}
+  .final-cta-title{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="welcome.html" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 20 20"><path d="M10 2L3 7v11h14V7L10 2zm0 2.5l5 3.5v8H5V8l5-3.5z"/><rect x="7.5" y="11" width="5" height="5" rx="0.5"/></svg>
+    </div>
+    <span>LMS Portal</span>
+  </a>
+  <div class="nav-menu">
+    <a href="#courses">Courses</a>
+    <a href="#why-us">Why Us</a>
+    <a href="#testimonials">Success Stories</a>
+  </div>
+  <div class="nav-cta">
+    <a href="login.html?mode=login" class="nav-signin">Sign In</a>
+    <a href="login.html?mode=register" class="nav-join">Join Now</a>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-wrapper">
+    <div class="hero-overline">✨ Learn From The Best</div>
+    <h1 class="hero-title">Master New Skills with <span>Expert Mentors</span></h1>
+    <p class="hero-subtitle">Personalized one-on-one classes designed just for you. Learn at your pace, track real progress, and achieve your goals with guidance from industry professionals.</p>
+    <div class="hero-cta-group">
+      <a href="login.html?mode=register" class="btn-primary-lg">
+        <span>🚀</span> Start Learning Today
+      </a>
+      <a href="#courses" class="btn-secondary-lg">
+        <span>📚</span> Explore Courses
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS SECTION -->
+<section class="highlights">
+  <div class="highlights-grid">
+    <div class="highlight-item">
+      <div class="highlight-icon">👨‍🏫</div>
+      <h3 class="highlight-title">Expert Mentors</h3>
+      <p class="highlight-desc">Learn from qualified teachers passionate about your success. 1-on-1 personalized guidance.</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-icon">📈</div>
+      <h3 class="highlight-title">Real Progress</h3>
+      <p class="highlight-desc">Track your attendance, completed topics, and performance with detailed analytics.</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-icon">🕐</div>
+      <h3 class="highlight-title">Your Schedule</h3>
+      <p class="highlight-desc">Book classes that fit your life. Study at your own pace without rigid timelines.</p>
+    </div>
+    <div class="highlight-item">
+      <div class="highlight-icon">💎</div>
+      <h3 class="highlight-title">Affordable Pricing</h3>
+      <p class="highlight-desc">Transparent costs, flexible payment models. No hidden charges ever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES SECTION -->
+<section class="courses-section" id="courses">
+  <div class="courses-container">
+    <div class="section-header">
+      <h2 class="section-title">Popular Courses</h2>
+      <p class="section-subtitle">Choose from expertly-designed courses led by experienced mentors</p>
+    </div>
+    <div class="courses-wrapper">
+      <div class="course-card">
+        <div class="course-header">Σ</div>
+        <div class="course-body">
+          <h3 class="course-title">Mathematics</h3>
+          <p class="course-mentor">Taught by Anand Kumar</p>
+          <div class="course-meta">
+            <span>📊 68 Students</span>
+            <span>💰 ₹5,200/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-header">⚡</div>
+        <div class="course-body">
+          <h3 class="course-title">Physics</h3>
+          <p class="course-mentor">Taught by Sneha Rao</p>
+          <div class="course-meta">
+            <span>📊 54 Students</span>
+            <span>💰 ₹4,800/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-header">⚗️</div>
+        <div class="course-body">
+          <h3 class="course-title">Chemistry</h3>
+          <p class="course-mentor">Taught by Ravi Pillai</p>
+          <div class="course-meta">
+            <span>📊 47 Students</span>
+            <span>💰 ₹4,500/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-header">📖</div>
+        <div class="course-body">
+          <h3 class="course-title">English</h3>
+          <p class="course-mentor">Taught by Nisha Kothari</p>
+          <div class="course-meta">
+            <span>📊 38 Students</span>
+            <span>💰 ₹3,800/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-header">🧬</div>
+        <div class="course-body">
+          <h3 class="course-title">Biology</h3>
+          <p class="course-mentor">Taught by Pradeep Joshi</p>
+          <div class="course-meta">
+            <span>📊 32 Students</span>
+            <span>💰 ₹4,200/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+      <div class="course-card">
+        <div class="course-header">🌍</div>
+        <div class="course-body">
+          <h3 class="course-title">Social Studies</h3>
+          <p class="course-mentor">Taught by Kavya Nair</p>
+          <div class="course-meta">
+            <span>📊 28 Students</span>
+            <span>💰 ₹3,500/mo</span>
+          </div>
+          <button class="course-btn">View Course</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why-us" id="why-us">
+  <div class="why-us-wrapper">
+    <div class="why-us-content">
+      <h2>Why Choose LMS Portal?</h2>
+      <div class="why-us-list">
+        <div class="why-us-item">
+          <div class="why-us-icon">✓</div>
+          <div class="why-us-text">
+            <h3>Personalized Learning</h3>
+            <p>1-on-1 classes tailored to your pace and learning style. Your mentor adapts to you.</p>
+          </div>
+        </div>
+        <div class="why-us-item">
+          <div class="why-us-icon">✓</div>
+          <div class="why-us-text">
+            <h3>Proven Track Record</h3>
+            <p>247+ active students. Average score improvement: +15 points. 94% attendance rate.</p>
+          </div>
+        </div>
+        <div class="why-us-item">
+          <div class="why-us-icon">✓</div>
+          <div class="why-us-text">
+            <h3>Flexible & Affordable</h3>
+            <p>Choose your schedule, payment model, and duration. No long-term contracts.</p>
+          </div>
+        </div>
+        <div class="why-us-item">
+          <div class="why-us-icon">✓</div>
+          <div class="why-us-text">
+            <h3>Real Progress Tracking</h3>
+            <p>See your growth with detailed analytics. Track attendance, completed topics, performance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-us-visual">🎓</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-wrapper">
+    <div class="section-header">
+      <h2 class="section-title">Student Success Stories</h2>
+      <p class="section-subtitle">Real results from students learning with LMS Portal</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">PS</div>
+          <div class="testimonial-info">
+            <h3>Priya Sharma</h3>
+            <p>Class 11, Mathematics</p>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+        <p class="testimonial-text">"My math scores jumped from 72 to 92 in just 3 months! Anand Kumar's <span class="testimonial-highlight">personalized approach</span> made all the difference."</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">AK</div>
+          <div class="testimonial-info">
+            <h3>Arjun Mehta</h3>
+            <p>Class 10, Physics</p>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+        <p class="testimonial-text">"The <span class="testimonial-highlight">flexible schedule</span> let me balance coaching with my school. Learning physics has never felt easier!"</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar">RK</div>
+          <div class="testimonial-info">
+            <h3>Rahul Kumar</h3>
+            <p>Class 12, Chemistry</p>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+        <p class="testimonial-text">"<span class="testimonial-highlight">Transparent billing</span> and real progress tracking kept me motivated. Highly recommended!"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-content">
+    <h2 class="final-cta-title">Ready to Transform Your Learning?</h2>
+    <p class="final-cta-subtitle">Join 247+ students who are already seeing real results. Start your journey with an expert mentor today.</p>
+    <a href="login.html?mode=register" class="final-cta-btn">
+      <span>🎯</span> Start Free Today
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 LMS Portal. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Contact</a></p>
+</footer>
+
+</body>
+</html>

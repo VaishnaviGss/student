@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>LMS Portal — Invoices</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f3f0;
+  --surface:#ffffff;
+  --sidebar-bg:#ffffff;
+  --sidebar-hover:rgba(109,40,217,0.05);
+  --sidebar-active:rgba(109,40,217,0.1);
+  --sidebar-active-border:#7c3aed;
+  --text:#1a1a2e;
+  --muted:#6b7280;
+  --faint:#ede9fe;
+  --border:rgba(0,0,0,0.07);
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --accent-light:#ede9fe;
+  --green:#059669;--green-bg:#ecfdf5;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --radius:12px;--radius-sm:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow:hidden}
+.layout{display:flex;height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:240px;flex-shrink:0;background:var(--sidebar-bg);display:flex;flex-direction:column;height:100vh;position:relative;overflow:hidden;border-right:1px solid rgba(0,0,0,0.07)}
+.sidebar::before{content:'';position:absolute;top:-60px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,0.06) 0%,transparent 70%);pointer-events:none}
+.sidebar::after{content:'';position:absolute;bottom:60px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(167,139,250,0.04) 0%,transparent 70%);pointer-events:none}
+.sidebar-logo{padding:22px 20px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,0.4)}
+.logo-icon svg{width:17px;height:17px;fill:#fff}
+.logo-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#1a1a2e;letter-spacing:-0.02em}
+.logo-sub{font-size:9px;color:rgba(109,40,217,0.5);letter-spacing:0.08em;text-transform:uppercase;font-weight:500}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:12px 12px}
+.sidebar-scroll::-webkit-scrollbar{width:0}
+.nav-section{font-size:9.5px;font-weight:600;color:rgba(0,0,0,0.3);letter-spacing:0.1em;text-transform:uppercase;padding:12px 8px 5px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;color:#6b7280;font-size:13px;font-weight:500;margin:1px 0;transition:all 0.15s;position:relative;border-left:2px solid transparent}
+.nav-item:hover{background:var(--sidebar-hover);color:#1a1a2e;border-left-color:rgba(109,40,217,0.3)}
+.nav-item.active{background:var(--sidebar-active);color:#7c3aed;border-left-color:var(--sidebar-active-border)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-footer{padding:14px 12px;border-top:1px solid rgba(0,0,0,0.06)}
+.user-card{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:background 0.15s}
+.user-card:hover{background:rgba(109,40,217,0.05)}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.user-name{font-size:12px;font-weight:600;color:#1a1a2e}
+.user-role{font-size:10px;color:#6b7280}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#10b981;margin-left:auto;box-shadow:0 0 0 2px rgba(16,185,129,0.3)}
+
+/* ─── MAIN ─── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:58px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 28px;flex-shrink:0}
+.topbar-left{display:flex;flex-direction:column}
+.topbar-title{font-size:15px;font-weight:700;letter-spacing:-0.02em;font-family:'Sora',sans-serif}
+.topbar-breadcrumb{font-size:11px;color:var(--muted);margin-top:0px}
+
+/* ─── CONTENT ─── */
+.content{flex:1;overflow-y:auto;padding:24px 28px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px}
+
+/* SCREENS */
+.screen{display:none}
+.screen.visible{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(120deg,#2d1065 0%,#4c1d95 40%,#5b21b6 70%,#7c3aed 100%);border-radius:16px;padding:28px 32px;margin-bottom:22px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between}
+.hero-left{color:#fff;z-index:1}
+.hero-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px}
+.hero-stats{display:flex;gap:32px}
+.hero-stat{display:flex;flex-direction:column}
+.hero-stat-label{font-size:11px;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.hero-stat-val{font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:#fff}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.kpi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow 0.15s}
+.kpi-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.07)}
+.kpi-top-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+.kpi-card.v1 .kpi-top-bar{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.kpi-card.v2 .kpi-top-bar{background:linear-gradient(90deg,#d97706,#fbbf24)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:7px}
+.kpi-value{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1}
+
+/* TABLE */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:22px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--border)}
+.card-title{font-size:13px;font-weight:700;letter-spacing:-0.01em}
+.card-bd{padding:18px 20px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;padding:9px 16px;text-align:left;border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--bg)}
+td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:12.5px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#faf9ff;cursor:pointer}
+.td-main{font-weight:600;color:var(--text)}
+.td-sub{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+.pill.paid{background:#ecfdf5;color:#059669}
+.pill.pending{background:#fef3c7;color:#92400e}
+
+/* BUTTONS */
+.btn-pay{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-pay:hover{background:#6d28d9;transform:translateY(-1px)}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;color:var(--text);font-size:12px;font-weight:600;margin-bottom:18px;transition:all 0.15s}
+.back-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+
+/* DETAIL CARD */
+.detail-banner{background:#fef3c7;border:1.5px solid #fcd34d;border-radius:var(--radius);padding:14px 16px;margin-bottom:20px;color:#92400e;font-size:12px;font-weight:600}
+.detail-header{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.detail-invoice-no{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.detail-invoice-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:14px}
+.detail-meta{display:flex;gap:32px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.detail-meta-item{display:flex;flex-direction:column}
+.detail-meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:0.05em;margin-bottom:4px}
+.detail-meta-value{font-size:13px;font-weight:600;color:var(--text)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+.detail-section{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px}
+.detail-section-title{font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:-0.01em}
+.detail-section-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.detail-section-item:last-child{border-bottom:none}
+.detail-section-label{font-size:12px;color:var(--muted)}
+.detail-section-value{font-size:12px;font-weight:600;color:var(--text)}
+
+.line-items{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius)}
+.line-items-table{width:100%;border-collapse:collapse}
+.line-items-table th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;background:var(--bg);border-bottom:1.5px solid var(--border)}
+.line-items-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text)}
+.line-items-table tr:last-child td{border-bottom:none}
+.line-items-table .item-desc{font-weight:600}
+.line-items-table .item-amount{text-align:right;font-weight:600}
+
+.detail-total{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:16px}
+.total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px}
+.total-row.grand{border-top:1.5px solid var(--border);padding-top:12px;margin-top:12px;font-weight:700;font-size:16px}
+.total-label{color:var(--muted)}
+.total-value{font-weight:600;color:var(--text)}
+.total-row.grand .total-value{color:var(--accent);font-family:'Sora',sans-serif}
+
+.pay-section{margin-top:20px;text-align:center;padding-top:20px;border-top:1px solid var(--border)}
+
+/* WALLET */
+.wallet-card{background:linear-gradient(135deg,#7c3aed 0%,#a78bfa 100%);border-radius:var(--radius);padding:20px;margin-bottom:22px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.wallet-left{flex:1}
+.wallet-label{font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;margin-bottom:4px;letter-spacing:0.05em}
+.wallet-balance{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em}
+.wallet-btn{padding:8px 16px;background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.wallet-btn:hover{background:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.6)}
+
+/* TABS */
+.page-tabs{display:flex;gap:24px;border-bottom:1.5px solid var(--border);margin-bottom:20px;padding-bottom:0}
+.page-tab{padding:12px 0;border:none;background:none;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s;border-bottom:2px solid transparent;position:relative;top:1.5px}
+.page-tab:hover{color:var(--text)}
+.page-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-content{display:none}
+.tab-content.visible{display:block}
+
+/* TRANSACTION TABLE */
+.transaction-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.transaction-info{flex:1}
+.transaction-type{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.transaction-date{font-size:11px;color:var(--muted)}
+.transaction-amount{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.transaction-amount.debit{color:var(--red)}
+.transaction-amount.credit{color:var(--green)}
+
+/* PAYMENT METHOD MODAL */
+dialog{border:none;border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.2);width:90%;max-width:480px;max-height:90vh;padding:0;animation:slideUp 0.3s ease-out;margin:auto}
+dialog::backdrop{background:rgba(0,0,0,0.4)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{padding:24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:18px;font-weight:700;color:var(--text)}
+.modal-close{width:32px;height:32px;border:none;background:var(--bg);border-radius:8px;cursor:pointer;color:var(--muted);font-size:16px;transition:all 0.15s}
+.modal-close:hover{background:rgba(0,0,0,0.1);color:var(--text)}
+.modal-body{padding:24px}
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.payment-method-btn{padding:16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;text-align:center;transition:all 0.15s}
+.payment-method-btn:hover{border-color:var(--accent);background:var(--accent-light)}
+.payment-method-btn.selected{border-color:var(--accent);background:var(--accent-light)}
+.payment-method-icon{font-size:24px;margin-bottom:8px}
+.payment-method-label{font-size:13px;font-weight:600;color:var(--text)}
+.payment-method-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.form-actions{display:flex;gap:12px;margin-top:24px;padding-top:24px;border-top:1px solid var(--border)}
+.btn-submit{flex:1;padding:12px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-submit:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-cancel{flex:1;padding:12px 16px;background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-cancel:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20"><path d="M10 2L3 7v11h14V7L10 2zm0 2.5l5 3.5v8H5V8l5-3.5z"/><rect x="7.5" y="11" width="5" height="5" rx="0.5"/></svg>
+    </div>
+    <div>
+      <div class="logo-name">LMS Portal</div>
+      <div class="logo-sub">Student</div>
+    </div>
+  </div>
+
+  <div class="sidebar-scroll">
+    <div class="nav-section">Main</div>
+    <div class="nav-item" data-page="student_dashboard.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-page="my_courses.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12a1 1 0 011 1v10a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1zm1 3v7h10V5H3z"/><path d="M5 7h6v1.5H5z"/></svg>
+      My Courses
+    </div>
+    <div class="nav-item" data-page="timetable.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M4 8h8M4 11h5"/></svg>
+      Timetable
+    </div>
+    <div class="nav-item active" data-page="invoices.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 4a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4zm2-1v9h8V3H4zm1 2h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/></svg>
+      Invoices
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">PS</div>
+      <div>
+        <div class="user-name">Priya Sharma</div>
+        <div class="user-role">Class 11</div>
+      </div>
+      <div class="status-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">Invoices</div>
+      <div class="topbar-breadcrumb">Priya Sharma · Total Due ₹7,200</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- LIST SCREEN -->
+    <div id="listScreen" class="screen visible">
+      <!-- WALLET CARD -->
+      <div class="wallet-card">
+        <div class="wallet-left">
+          <div class="wallet-label">Your Wallet Balance</div>
+          <div class="wallet-balance" id="walletBalance">₹2,000</div>
+        </div>
+        <button class="wallet-btn" onclick="alert('Coming soon: Add funds to wallet')">+ Add Funds</button>
+      </div>
+
+      <!-- TABS -->
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchPageTab('invoices')">Invoice History</button>
+        <button class="page-tab" onclick="switchPageTab('transactions')">Transactions</button>
+      </div>
+
+      <!-- INVOICES TAB -->
+      <div id="invoicesTab" class="tab-content visible">
+        <!-- HERO -->
+        <div class="hero">
+        <div class="hero-left">
+          <div class="hero-title">Billing Summary</div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-label">Amount Paid</div>
+              <div class="hero-stat-val">₹14,200</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-label">Pending Amount</div>
+              <div class="hero-stat-val">₹7,200</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card v1">
+          <div class="kpi-top-bar"></div>
+          <div class="kpi-label">Total Invoiced</div>
+          <div class="kpi-value">₹21,400</div>
+        </div>
+        <div class="kpi-card v2">
+          <div class="kpi-top-bar"></div>
+          <div class="kpi-label">Due by May 10</div>
+          <div class="kpi-value">₹7,200</div>
+        </div>
+      </div>
+
+      <!-- INVOICE TABLE -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Invoice History</div>
+        </div>
+        <div class="card-bd" style="padding-top:12px">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- TRANSACTIONS TAB -->
+      <div id="transactionsTab" class="tab-content">
+        <div style="padding:20px;text-align:center;color:var(--muted)">
+          <div style="font-size:40px;margin-bottom:12px">💳</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">Wallet Transactions</div>
+          <div style="font-size:12px;margin-bottom:20px">View all wallet debits and credits</div>
+        </div>
+        <div id="transactionsList"></div>
+      </div>
+    </div>
+
+    <!-- DETAIL SCREEN -->
+    <div id="detailScreen" class="screen">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+
+      <div id="pendingBanner" class="detail-banner" style="display:none">
+        ⚠️ Payment pending. Please pay by the due date to avoid late fees.
+      </div>
+
+      <!-- INVOICE HEADER -->
+      <div class="detail-header">
+        <div class="detail-invoice-no" id="detailInvoiceNo">Invoice Number</div>
+        <div class="detail-invoice-title" id="detailInvoiceTitle">INV-0000</div>
+        <div class="detail-meta">
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Invoice Date</div>
+            <div class="detail-meta-value" id="detailInvoiceDate">—</div>
+          </div>
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Due Date</div>
+            <div class="detail-meta-value" id="detailDueDate">—</div>
+          </div>
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Status</div>
+            <div class="detail-meta-value" id="detailStatus">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BILLING & PAYMENT INFO -->
+      <div class="grid-2">
+        <div class="detail-section">
+          <div class="detail-section-title">Billing Details</div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Student</div>
+            <div class="detail-section-value">Priya Sharma</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Email</div>
+            <div class="detail-section-value">priya@example.com</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Class</div>
+            <div class="detail-section-value">Class 11</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Student ID</div>
+            <div class="detail-section-value">STD-2024-001</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Payment Information</div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Payment Method</div>
+            <div class="detail-section-value">Online</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Transaction ID</div>
+            <div class="detail-section-value" id="detailTransId">—</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Paid Amount</div>
+            <div class="detail-section-value" id="detailPaidAmount">—</div>
+          </div>
+          <div class="detail-section-item">
+            <div class="detail-section-label">Remaining Balance</div>
+            <div class="detail-section-value" id="detailBalance">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINE ITEMS -->
+      <table class="line-items-table">
+        <thead>
+          <tr>
+            <th>Course & Mentor</th>
+            <th style="text-align:right">Amount</th>
+            <th style="text-align:right">Commission</th>
+            <th style="text-align:right">Total</th>
+          </tr>
+        </thead>
+        <tbody id="lineItemsTable"></tbody>
+      </table>
+
+      <!-- TOTALS -->
+      <div class="detail-total">
+        <div class="total-row">
+          <span class="total-label">Subtotal</span>
+          <span class="total-value" id="detailSubtotal">—</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Wallet Deduction</span>
+          <span class="total-value" id="detailWalletDeduction" style="color:var(--green)">—</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Tax (0%)</span>
+          <span class="total-value">₹0</span>
+        </div>
+        <div class="total-row grand">
+          <span class="total-label">Total Amount</span>
+          <span class="total-value" id="detailTotal">—</span>
+        </div>
+      </div>
+
+      <!-- PAY BUTTON -->
+      <div class="pay-section" id="paySection"></div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<!-- PAYMENT METHOD MODAL -->
+<dialog id="paymentModal">
+  <div class="modal-header">
+    <div class="modal-title">Select Payment Method</div>
+    <button class="modal-close" onclick="closePaymentModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="payment-methods">
+      <button class="payment-method-btn selected" onclick="selectPaymentMethod(this, 'wallet')">
+        <div class="payment-method-icon">💰</div>
+        <div class="payment-method-label">From Wallet</div>
+        <div class="payment-method-sub" id="walletAmountDisplay">Balance: ₹2,000</div>
+      </button>
+      <button class="payment-method-btn" onclick="selectPaymentMethod(this, 'external')">
+        <div class="payment-method-icon">🌐</div>
+        <div class="payment-method-label">Pay Online</div>
+        <div class="payment-method-sub">Credit/Debit Card</div>
+      </button>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
+      <button type="button" class="btn-submit" id="paySubmitBtn" onclick="confirmPayment()">Proceed to Pay</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const listScreen = document.getElementById('listScreen');
+const detailScreen = document.getElementById('detailScreen');
+const invoiceTable = document.getElementById('invoiceTable');
+
+let walletBalance = 2000;
+let selectedPaymentMethod = 'wallet';
+let currentInvoiceForPayment = null;
+
+const walletTransactions = [
+  { id: 'TXN-2026-003', type: 'admin_credit', amount: 500, description: 'Monthly Scholarship - April 2026', date: 'Apr 01, 2026', reference: 'SCHOL-2026-04' },
+  { id: 'TXN-2026-002', type: 'invoice_payment', amount: 7200, description: 'INV-0241 - March 2026 Courses', date: 'Mar 25, 2026', reference: 'INV-0241' },
+  { id: 'TXN-2026-001', type: 'invoice_payment', amount: 7200, description: 'INV-0240 - February 2026 Courses', date: 'Feb 20, 2026', reference: 'INV-0240' },
+  { id: 'TXN-2026-004', type: 'admin_credit', amount: 1000, description: 'Platform Credit - New Student', date: 'Jan 15, 2026', reference: 'PROMO-2026' },
+];
+
+const invoices = [
+  {
+    id: 'INV-0242',
+    date: 'Apr 20, 2026',
+    dueDate: 'May 10, 2026',
+    startDate: 'Apr 01, 2026',
+    endDate: 'Apr 30, 2026',
+    status: 'pending',
+    subtotal: 7700,
+    walletDeduction: 500,
+    amount: 7200,
+    description: 'April 2026 - Mathematics & Physics',
+    paidAmount: 0,
+    transId: null,
+    balance: 7200,
+    items: [
+      { course: 'Mathematics — Grade 10', mentor: 'Anand Kumar', classCount: 12, price: 3500, mentorCommission: 28, amount: 3500 },
+      { course: 'Physics Fundamentals', mentor: 'Sneha Rao', classCount: 20, price: 4500, mentorCommission: 30, amount: 4200 }
+    ]
+  },
+  {
+    id: 'INV-0241',
+    date: 'Mar 25, 2026',
+    dueDate: 'Apr 15, 2026',
+    startDate: 'Mar 01, 2026',
+    endDate: 'Mar 31, 2026',
+    status: 'paid',
+    subtotal: 7000,
+    walletDeduction: 0,
+    amount: 7000,
+    description: 'March 2026 - Mathematics & Physics',
+    paidAmount: 7000,
+    transId: 'TXN-2026-001',
+    balance: 0,
+    items: [
+      { course: 'Mathematics — Grade 10', mentor: 'Anand Kumar', classCount: 12, price: 3500, mentorCommission: 28, amount: 3500 },
+      { course: 'Physics Fundamentals', mentor: 'Sneha Rao', classCount: 18, price: 3500, mentorCommission: 30, amount: 3500 }
+    ]
+  },
+  {
+    id: 'INV-0240',
+    date: 'Feb 20, 2026',
+    dueDate: 'Mar 10, 2026',
+    startDate: 'Feb 01, 2026',
+    endDate: 'Feb 28, 2026',
+    status: 'paid',
+    subtotal: 8000,
+    walletDeduction: 800,
+    amount: 7200,
+    description: 'February 2026 - Mathematics, Physics & Chemistry',
+    paidAmount: 7200,
+    transId: 'TXN-2026-002',
+    balance: 0,
+    items: [
+      { course: 'Mathematics — Grade 10', mentor: 'Anand Kumar', classCount: 12, price: 3500, mentorCommission: 28, amount: 3500 },
+      { course: 'Physics Fundamentals', mentor: 'Sneha Rao', classCount: 16, price: 3200, mentorCommission: 30, amount: 3200 },
+      { course: 'Chemistry — Organic & Inorganic', mentor: 'Ravi Pillai', classCount: 8, price: 1300, mentorCommission: 32, amount: 1300 }
+    ]
+  }
+];
+
+function renderInvoiceTable() {
+  invoiceTable.innerHTML = invoices.map(inv => `
+    <tr onclick="openDetail('${inv.id}')">
+      <td style="color:var(--accent);font-weight:600">${inv.id}</td>
+      <td>${inv.date}</td>
+      <td>${inv.description}</td>
+      <td style="font-weight:600">₹${inv.amount.toLocaleString()}</td>
+      <td><span class="pill ${inv.status}">${inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}</span></td>
+      <td>${inv.status === 'pending' ? '<button class="btn-pay" onclick="event.stopPropagation(); openPaymentModal(\'' + inv.id + '\')">Pay Now</button>' : '<span style="color:var(--muted);font-size:11px">Paid</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+function openDetail(id) {
+  const invoice = invoices.find(i => i.id === id);
+
+  document.getElementById('detailInvoiceNo').textContent = `Invoice ${invoice.id}`;
+  document.getElementById('detailInvoiceTitle').textContent = invoice.id;
+  document.getElementById('detailInvoiceDate').textContent = invoice.startDate + ' to ' + invoice.endDate;
+  document.getElementById('detailDueDate').textContent = invoice.dueDate;
+  document.getElementById('detailStatus').innerHTML = `<span class="pill ${invoice.status}">${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>`;
+  document.getElementById('detailTransId').textContent = invoice.transId || '—';
+  document.getElementById('detailPaidAmount').textContent = `₹${invoice.paidAmount.toLocaleString()}`;
+  document.getElementById('detailBalance').textContent = `₹${invoice.balance.toLocaleString()}`;
+
+  document.getElementById('detailSubtotal').textContent = `₹${invoice.subtotal.toLocaleString()}`;
+  document.getElementById('detailWalletDeduction').textContent = invoice.walletDeduction > 0 ? `−₹${invoice.walletDeduction.toLocaleString()}` : '—';
+  document.getElementById('detailTotal').textContent = `₹${invoice.amount.toLocaleString()}`;
+
+  document.getElementById('lineItemsTable').innerHTML = invoice.items.map(item => `
+    <tr>
+      <td class="item-desc">${item.course} <div style="font-size:11px;color:var(--muted);margin-top:2px">by ${item.mentor} (${item.classCount} classes)</div></td>
+      <td style="text-align:right">₹${item.price.toLocaleString()}</td>
+      <td style="text-align:right">${item.mentorCommission}%</td>
+      <td style="text-align:right;font-weight:600">₹${item.amount.toLocaleString()}</td>
+    </tr>
+  `).join('');
+
+  const pendingBanner = document.getElementById('pendingBanner');
+  const paySection = document.getElementById('paySection');
+  if (invoice.status === 'pending') {
+    pendingBanner.style.display = 'block';
+    paySection.innerHTML = '<button class="btn-pay" style="width:100%;padding:12px;font-size:14px" onclick="openPaymentModal(\'' + invoice.id + '\')">Pay ₹' + invoice.amount.toLocaleString() + ' Now</button>';
+  } else {
+    pendingBanner.style.display = 'none';
+    paySection.innerHTML = '<div style="color:var(--green);font-weight:600;text-align:center">✓ Invoice paid in full</div>';
+  }
+
+  listScreen.classList.remove('visible');
+  detailScreen.classList.add('visible');
+}
+
+function goBack() {
+  detailScreen.classList.remove('visible');
+  listScreen.classList.add('visible');
+}
+
+function switchPageTab(tab) {
+  const tabs = document.querySelectorAll('.page-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+
+  const activeBtn = Array.from(tabs).find(t => t.textContent.includes(tab === 'invoices' ? 'Invoice' : 'Transaction'));
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.getElementById('invoicesTab').classList.remove('visible');
+  document.getElementById('transactionsTab').classList.remove('visible');
+
+  if (tab === 'invoices') {
+    document.getElementById('invoicesTab').classList.add('visible');
+  } else {
+    document.getElementById('transactionsTab').classList.add('visible');
+    renderTransactions();
+  }
+}
+
+function renderTransactions() {
+  const transactionsList = document.getElementById('transactionsList');
+  transactionsList.innerHTML = walletTransactions.map(txn => `
+    <div class="transaction-item">
+      <div class="transaction-info">
+        <div class="transaction-type">${txn.description}</div>
+        <div class="transaction-date">${txn.date}</div>
+      </div>
+      <div class="transaction-amount ${txn.type === 'invoice_payment' || txn.type === 'admin_debit' ? 'debit' : 'credit'}">
+        ${txn.type === 'invoice_payment' || txn.type === 'admin_debit' ? '−' : '+'}₹${txn.amount.toLocaleString()}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPaymentModal(invoiceId) {
+  currentInvoiceForPayment = invoiceId;
+  selectedPaymentMethod = 'wallet';
+  document.querySelectorAll('.payment-method-btn').forEach(btn => btn.classList.remove('selected'));
+  document.querySelectorAll('.payment-method-btn')[0].classList.add('selected');
+  document.getElementById('paymentModal').showModal();
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').close();
+  currentInvoiceForPayment = null;
+}
+
+function selectPaymentMethod(btn, method) {
+  selectedPaymentMethod = method;
+  document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function confirmPayment() {
+  const invoice = invoices.find(i => i.id === currentInvoiceForPayment);
+  if (!invoice) return;
+
+  if (selectedPaymentMethod === 'wallet') {
+    if (walletBalance < invoice.amount) {
+      alert(`Insufficient wallet balance. Need ₹${invoice.amount}, have ₹${walletBalance}`);
+      return;
+    }
+    walletBalance -= invoice.amount;
+    invoice.status = 'paid';
+    invoice.paidAmount = invoice.amount;
+    invoice.balance = 0;
+    invoice.transId = 'TXN-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 10000);
+
+    walletTransactions.unshift({
+      id: invoice.transId,
+      type: 'invoice_payment',
+      amount: invoice.amount,
+      description: invoice.id + ' - ' + invoice.description,
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      reference: invoice.id
+    });
+  } else {
+    alert('Redirecting to external payment gateway...\n\nNote: Backend will handle actual payment processing.');
+  }
+
+  document.getElementById('walletBalance').textContent = '₹' + walletBalance.toLocaleString();
+  closePaymentModal();
+  renderInvoiceTable();
+  alert('Payment successful!');
+}
+
+renderInvoiceTable();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LMS Portal — Sign In / Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf9;
+  --surface:#ffffff;
+  --text:#0f0f1e;
+  --muted:#6b7280;
+  --accent:#7c3aed;
+  --accent2:#a78bfa;
+  --accent-light:#ede9fe;
+  --red:#dc2626;
+  --border:rgba(0,0,0,0.06);
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+html{scrollbar-gutter:stable}html,body{height:100%;background:linear-gradient(135deg,#fafaf9 0%,#f3f0ff 100%);color:var(--text);font-size:14px;line-height:1.5;display:flex;align-items:center;justify-content:center}
+
+.auth-wrapper{width:100%;max-width:480px;min-width:480px;padding:20px;flex-shrink:0}
+
+/* ═══ HEADER ═══ */
+.auth-header{text-align:center;margin-bottom:48px}
+.auth-logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:24px}
+.auth-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center}
+.auth-logo-icon svg{width:18px;height:18px;fill:#fff}
+.auth-logo-text{font-weight:700;color:var(--text);font-family:'Sora',sans-serif;font-size:16px}
+
+.auth-title{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;margin-bottom:8px}
+.auth-subtitle{font-size:14px;color:var(--muted)}
+
+/* ═══ TAB NAVIGATION ═══ */
+.auth-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:32px;background:transparent}
+.auth-tab{flex:1;padding:14px;background:transparent;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);position:relative;transition:color 0.15s;user-select:none}
+.auth-tab.active{color:var(--accent)}
+.auth-tab.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--accent)}
+
+/* ═══ FORM CARD ═══ */
+.auth-card{background:var(--surface);border-radius:16px;padding:32px;box-shadow:0 4px 16px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.04);min-height:520px;width:100%}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ═══ FORM ELEMENTS ═══ */
+.form-group{margin-bottom:18px}
+.form-label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.03em}
+.form-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-size:13px;font-family:inherit;outline:none;transition:all 0.15s;color:var(--text)}
+.form-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(124,58,237,0.08)}
+.form-input::placeholder{color:var(--muted)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.form-error{display:none;padding:10px 12px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;color:#be123c;font-size:12px;margin-bottom:18px}
+
+.phone-input-group{position:relative}
+.phone-country{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:600;pointer-events:none}
+.phone-input-group .form-input{padding-left:50px}
+
+.otp-inputs{display:flex;gap:8px;justify-content:space-between;margin-bottom:18px}
+.otp-input{width:100%;height:48px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);text-align:center;font-size:20px;font-weight:700;font-family:monospace;outline:none;transition:all 0.15s}
+.otp-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(124,58,237,0.08)}
+
+/* ═══ BUTTONS ═══ */
+.btn-submit{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-bottom:12px}
+.btn-submit:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-submit:active{transform:translateY(0)}
+
+/* ═══ FORM FOOTER ═══ */
+.form-footer{font-size:13px;color:var(--muted);text-align:center}
+.form-footer button{background:none;border:none;cursor:pointer;color:var(--accent);font-weight:600;text-decoration:none;padding:0;font-family:inherit;font-size:inherit;transition:color 0.15s}
+.form-footer button:hover{color:#6d28d9;text-decoration:underline}
+
+.form-helper{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+.form-helper button{background:none;border:none;cursor:pointer;color:var(--accent);font-weight:600;padding:0;font-family:inherit;font-size:inherit;transition:color 0.15s}
+.form-helper button:hover{color:#6d28d9}
+
+.form-toggle{font-size:13px;color:var(--muted);margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center}
+.form-toggle button{background:none;border:none;cursor:pointer;color:var(--accent);font-weight:600;padding:0;font-family:inherit;font-size:inherit}
+
+/* ═══ PROGRESS INDICATOR ═══ */
+.progress-dots{display:flex;gap:8px;justify-content:center;margin-bottom:24px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all 0.2s}
+.dot.active{background:var(--accent);width:24px;border-radius:4px}
+
+/* ═══ SCREEN STATES ═══ */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ═══ BACK BUTTON ═══ */
+.auth-back{position:absolute;top:20px;left:20px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;font-weight:600;font-family:inherit;padding:8px;transition:color 0.15s;display:none}
+.auth-back:hover{color:var(--text)}
+.auth-back.show{display:block}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:480px){
+  .auth-wrapper{padding:16px}
+  .auth-header{margin-bottom:32px}
+  .auth-title{font-size:22px}
+  .auth-card{padding:24px}
+  .auth-tabs{margin-bottom:24px}
+}
+</style>
+</head>
+<body>
+
+<button class="auth-back" id="authBack" onclick="goBack()">← Back</button>
+
+<div class="auth-wrapper">
+  <!-- HEADER -->
+  <div class="auth-header">
+    <a href="welcome.html" class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg viewBox="0 0 20 20"><path d="M10 2L3 7v11h14V7L10 2zm0 2.5l5 3.5v8H5V8l5-3.5z"/><rect x="7.5" y="11" width="5" height="5" rx="0.5"/></svg>
+      </div>
+      <span class="auth-logo-text">LMS Portal</span>
+    </a>
+    <h1 class="auth-title" id="authTitle">Welcome Back</h1>
+    <p class="auth-subtitle" id="authSubtitle">Sign in to your account</p>
+  </div>
+
+  <!-- AUTH CARD -->
+  <div class="auth-card">
+    <!-- TABS -->
+    <div class="auth-tabs" id="formTabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- ═════ LOGIN ═════ -->
+    <div id="login" class="tab-content active">
+      <!-- Phone Screen -->
+      <div id="login-phone" class="screen active">
+        <div class="form-error" id="loginPhoneError"></div>
+        <form onsubmit="handlePhoneLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginPhone">Phone Number</label>
+            <div class="phone-input-group">
+              <span class="phone-country">+91</span>
+              <input type="tel" class="form-input" id="loginPhone" placeholder="Enter 10-digit number" maxlength="10" value="123456789" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Send OTP</button>
+          <div class="form-toggle">
+            Don't have an account? <button type="button" onclick="switchTab('register')">Register</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- OTP Screen -->
+      <div id="login-otp" class="screen">
+        <div class="form-error" id="loginOtpError"></div>
+        <form onsubmit="handleOtpLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="otp1">Enter OTP</label>
+            <div class="otp-inputs">
+              <input type="text" class="otp-input" id="otp1" maxlength="1" inputmode="numeric" value="1" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="2" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="3" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="4" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="5" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="6" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Verify & Login</button>
+          <div class="form-helper">
+            Didn't receive code? <button type="button" onclick="resendOtp()">Resend OTP</button>
+          </div>
+          <div class="form-footer" style="margin-top:16px">
+            <button type="button" onclick="backToPhoneLogin()">← Change phone number</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Email/Password Screen -->
+      <div id="login-password" class="screen">
+        <div class="form-error" id="loginPasswordError"></div>
+        <form onsubmit="handlePasswordLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Email</label>
+            <input type="email" class="form-input" id="loginEmail" placeholder="student@yopmail.com" value="student@yopmail.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" value="Abcd@1234" required>
+          </div>
+          <button type="submit" class="btn-submit">Sign In</button>
+          <div class="form-footer">
+            <button type="button">Forgot password?</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ═════ REGISTER ═════ -->
+    <div id="register" class="tab-content">
+      <!-- Progress -->
+      <div class="progress-dots" id="progressDots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <!-- Phone Screen -->
+      <div id="register-phone" class="screen active">
+        <div class="form-error" id="registerPhoneError"></div>
+        <form onsubmit="handlePhoneRegister(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="registerFirstName">First Name</label>
+              <input type="text" class="form-input" id="registerFirstName" placeholder="Priya" value="Priya" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="registerLastName">Last Name</label>
+              <input type="text" class="form-input" id="registerLastName" placeholder="Sharma" value="Sharma" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerPhone">Phone Number</label>
+            <div class="phone-input-group">
+              <span class="phone-country">+91</span>
+              <input type="tel" class="form-input" id="registerPhone" placeholder="Enter 10-digit number" maxlength="10" value="123456789" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Send OTP</button>
+          <div class="form-toggle">
+            Already have an account? <button type="button" onclick="switchTab('login')">Sign in</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- OTP Screen -->
+      <div id="register-otp" class="screen">
+        <div class="form-error" id="registerOtpError"></div>
+        <form onsubmit="handleOtpRegister(event)">
+          <div class="form-group">
+            <label class="form-label" for="otp1r">Enter OTP</label>
+            <div class="otp-inputs">
+              <input type="text" class="otp-input" id="otp1r" maxlength="1" inputmode="numeric" value="1" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="2" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="3" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="4" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="5" required>
+              <input type="text" class="otp-input" maxlength="1" inputmode="numeric" value="6" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Verify & Continue</button>
+          <div class="form-helper">
+            Didn't receive code? <button type="button" onclick="resendOtpRegister()">Resend OTP</button>
+          </div>
+          <div class="form-footer" style="margin-top:16px">
+            <button type="button" onclick="backToPhoneRegister()">← Change phone number</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Set Password Screen -->
+      <div id="register-password" class="screen">
+        <div class="form-error" id="registerPasswordError"></div>
+        <form onsubmit="handlePasswordRegister(event)">
+          <div class="form-group">
+            <label class="form-label" for="registerEmail">Email</label>
+            <input type="email" class="form-input" id="registerEmail" placeholder="your@example.com" value="student@yopmail.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerNewPassword">Password</label>
+            <input type="password" class="form-input" id="registerNewPassword" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerConfirmPassword">Confirm Password</label>
+            <input type="password" class="form-input" id="registerConfirmPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═════ URL PARAM HANDLER ═════
+globalThis.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(globalThis.location.search);
+  const mode = params.get('mode');
+
+  if(mode === 'login') {
+    document.querySelectorAll('.auth-tab')[0].click();
+  } else if(mode === 'register') {
+    document.querySelectorAll('.auth-tab')[1].click();
+  }
+});
+
+// ═════ TAB SWITCHING ═════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  clearAllScreens();
+
+  if(tab === 'login') {
+    document.getElementById('authTitle').textContent = 'Welcome Back';
+    document.getElementById('authSubtitle').textContent = 'Sign in to your account';
+    document.getElementById('login-phone').classList.add('active');
+    document.getElementById('authBack').classList.remove('show');
+  } else {
+    document.getElementById('authTitle').textContent = 'Create Account';
+    document.getElementById('authSubtitle').textContent = 'Join 247+ students learning with us';
+    document.getElementById('register-phone').classList.add('active');
+    document.getElementById('authBack').classList.remove('show');
+    updateProgressDots(0);
+  }
+}
+
+function goBack() {
+  globalThis.location.href = 'welcome.html';
+}
+
+// ═════ LOGIN FLOW ═════
+function handlePhoneLogin(e) {
+  e.preventDefault();
+  const phone = document.getElementById('loginPhone').value;
+  const errorDiv = document.getElementById('loginPhoneError');
+
+  if(phone !== '123456789') {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'Invalid phone. Use 123456789 for demo.';
+    return;
+  }
+
+  clearAllScreens();
+  document.getElementById('login-otp').classList.add('active');
+  focusFirstOtpInput();
+}
+
+function handleOtpLogin(e) {
+  e.preventDefault();
+  const otp = getOtpValue();
+  const errorDiv = document.getElementById('loginOtpError');
+
+  if(otp !== '123456') {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'Invalid OTP. Use 123456 for demo.';
+    return;
+  }
+
+  globalThis.location.href = 'dashboard.html';
+}
+
+function backToPhoneLogin() {
+  clearAllScreens();
+  document.getElementById('login-phone').classList.add('active');
+  clearOtpInputs();
+}
+
+function resendOtp() {
+  alert('OTP resent to phone number');
+  clearOtpInputs();
+  focusFirstOtpInput();
+}
+
+function handlePasswordLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorDiv = document.getElementById('loginPasswordError');
+
+  if(email !== 'student@yopmail.com' || password !== 'Abcd@1234') {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'Invalid credentials. Use student@yopmail.com / Abcd@1234';
+    return;
+  }
+
+  globalThis.location.href = 'index.html';
+}
+
+// ═════ REGISTER FLOW ═════
+function handlePhoneRegister(e) {
+  e.preventDefault();
+  const firstName = document.getElementById('registerFirstName').value;
+  const lastName = document.getElementById('registerLastName').value;
+  const phone = document.getElementById('registerPhone').value;
+  const errorDiv = document.getElementById('registerPhoneError');
+
+  if(!firstName || !lastName || !phone) {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'All fields required';
+    return;
+  }
+
+  sessionStorage.setItem('regFirstName', firstName);
+  sessionStorage.setItem('regLastName', lastName);
+  sessionStorage.setItem('regPhone', phone);
+
+  clearAllScreens();
+  document.getElementById('register-otp').classList.add('active');
+  updateProgressDots(1);
+  focusFirstOtpInput();
+}
+
+function handleOtpRegister(e) {
+  e.preventDefault();
+  const otp = getOtpValue();
+  const errorDiv = document.getElementById('registerOtpError');
+
+  if(otp !== '123456') {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'Invalid OTP. Use 123456 for demo.';
+    return;
+  }
+
+  clearAllScreens();
+  document.getElementById('register-password').classList.add('active');
+  updateProgressDots(2);
+  clearOtpInputs();
+}
+
+function handlePasswordRegister(e) {
+  e.preventDefault();
+  const password = document.getElementById('registerNewPassword').value;
+  const confirm = document.getElementById('registerConfirmPassword').value;
+  const errorDiv = document.getElementById('registerPasswordError');
+
+  if(password !== confirm) {
+    errorDiv.style.display = 'block';
+    errorDiv.textContent = 'Passwords do not match';
+    return;
+  }
+
+  globalThis.location.href = 'index.html';
+}
+
+function backToPhoneRegister() {
+  clearAllScreens();
+  document.getElementById('register-phone').classList.add('active');
+  updateProgressDots(0);
+  clearOtpInputs();
+}
+
+function resendOtpRegister() {
+  alert('OTP resent to phone number');
+  clearOtpInputs();
+  focusFirstOtpInput();
+}
+
+// ═════ HELPERS ═════
+function clearAllScreens() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.form-error').forEach(e => e.style.display = 'none');
+}
+
+function focusFirstOtpInput() {
+  const inputs = document.querySelectorAll('.screen.active .otp-input');
+  if(inputs.length > 0) inputs[0].focus();
+}
+
+function getOtpValue() {
+  const inputs = Array.from(document.querySelectorAll('.screen.active .otp-input'));
+  return inputs.map(i => i.value).join('');
+}
+
+function clearOtpInputs() {
+  document.querySelectorAll('.screen.active .otp-input').forEach(i => i.value = '');
+}
+
+function updateProgressDots(step) {
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i <= step);
+  });
+}
+
+// OTP navigation
+document.addEventListener('input', function(e) {
+  if(e.target.classList.contains('otp-input')) {
+    const inputs = Array.from(e.target.closest('.screen').querySelectorAll('.otp-input'));
+    const current = inputs.indexOf(e.target);
+
+    if(e.target.value && current < inputs.length - 1) {
+      inputs[current + 1].focus();
+    }
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  if(e.target.classList.contains('otp-input') && e.key === 'Backspace' && !e.target.value) {
+    const inputs = Array.from(e.target.closest('.screen').querySelectorAll('.otp-input'));
+    const current = inputs.indexOf(e.target);
+    if(current > 0) {
+      inputs[current - 1].focus();
+    }
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LMS Portal — Timetable</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f3f0;
+  --surface:#ffffff;
+  --text:#1a1a2e;
+  --muted:#6b7280;
+  --border:rgba(0,0,0,0.07);
+  --accent:#7c3aed;
+  --green:#059669;--green-bg:#ecfdf5;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --radius:12px;--radius-sm:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow:hidden}
+.layout{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-logo{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:16px;height:16px;fill:#fff}
+.logo-name{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#1a1a2e}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:12px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:#6b7280;font-size:13px;font-weight:500;margin:2px 0;transition:all 0.15s;border-left:2px solid transparent}
+.nav-item.active{background:rgba(109,40,217,0.1);color:#7c3aed;border-left-color:#7c3aed}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-footer{padding:14px 12px;border-top:1px solid var(--border)}
+.user-card{display:flex;align-items:center;gap:10px;padding:8px}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.user-name{font-size:12px;font-weight:600;color:#1a1a2e}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:700;font-family:'Sora',sans-serif}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:24px 28px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px}
+
+/* MAIN GRID */
+.grid-2col{display:grid;grid-template-columns:280px 1fr;gap:20px}
+
+/* CALENDAR */
+.calendar{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;height:fit-content}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-title{font-size:13px;font-weight:700;color:var(--text)}
+.cal-nav{display:flex;gap:6px}
+.cal-btn{width:26px;height:26px;border:1px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.15s}
+.cal-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-header{text-align:center;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;padding:4px;margin-bottom:2px}
+.day-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all 0.12s;background:var(--bg)}
+.day-cell:hover{border-color:var(--accent)}
+.day-cell.other{color:var(--muted);background:transparent}
+.day-cell.present{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.day-cell.absent{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.day-cell.next{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* UPCOMING */
+.upcoming{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius)}
+.upcoming-header{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.upcoming-title{font-size:13px;font-weight:700;color:var(--text)}
+.clear-btn{padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.clear-btn:hover{border-color:var(--accent);color:var(--accent)}
+.upcoming-list{padding:12px}
+.session-item{padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.session-item:last-child{border-bottom:none}
+.session-info{flex:1;min-width:0}
+.session-course{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.session-time{font-size:11px;color:var(--muted)}
+.session-mentor{font-size:11px;color:var(--muted);margin-top:2px}
+.session-status{display:inline-block;padding:3px 8px;border-radius:16px;font-size:10px;font-weight:600}
+.status-scheduled{background:rgba(124,58,237,0.1);color:var(--accent)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.stat-val{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text);line-height:1}
+.stat-label{font-size:10px;color:var(--muted);margin-top:4px;text-transform:uppercase;font-weight:600}
+
+/* FILTER */
+.filter{margin-bottom:20px}
+.filter-label{font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;margin-bottom:6px;display:block}
+.filter-select{width:100%;height:34px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);font-size:12px;color:var(--text);font-family:inherit;cursor:pointer;outline:none}
+.filter-select:hover{border-color:var(--accent)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .grid-2col{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .content{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><svg viewBox="0 0 20 20"><path d="M10 2L3 7v11h14V7L10 2zm0 2.5l5 3.5v8H5V8l5-3.5z"/><rect x="7.5" y="11" width="5" height="5" rx="0.5"/></svg></div>
+    <div class="logo-name">LMS</div>
+  </div>
+
+  <div class="sidebar-scroll">
+    <div class="nav-item" data-page="student_dashboard.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" data-page="my_courses.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v1H2zm0 3h12v7H2z"/></svg>
+      My Courses
+    </div>
+    <div class="nav-item active" data-page="timetable.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1.5"/></svg>
+      Timetable
+    </div>
+    <div class="nav-item" data-page="invoices.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="1"/></svg>
+      Invoices
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">PS</div>
+      <div>
+        <div class="user-name">Priya Sharma</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Timetable</div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val">8</div>
+        <div class="stat-label">Upcoming</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">34</div>
+        <div class="stat-label">Present</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">2</div>
+        <div class="stat-label">Absent</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">94%</div>
+        <div class="stat-label">Rate</div>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter">
+      <label class="filter-label">Filter by Course</label>
+      <select id="courseFilter" class="filter-select">
+        <option value="">All Courses</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Physics">Physics</option>
+      </select>
+    </div>
+
+    <!-- TWO COL LAYOUT -->
+    <div class="grid-2col">
+
+      <!-- CALENDAR -->
+      <div class="calendar">
+        <div class="cal-header">
+          <div class="cal-title" id="calMonth">April</div>
+          <div class="cal-nav">
+            <button class="cal-btn" id="prevM">←</button>
+            <button class="cal-btn" id="nextM">→</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
+      <!-- UPCOMING CLASSES -->
+      <div class="upcoming">
+        <div class="upcoming-header">
+          <div class="upcoming-title" id="listTitle">Upcoming Classes</div>
+          <button class="clear-btn" id="clearBtn" style="display:none">Clear</button>
+        </div>
+        <div class="upcoming-list" id="classList"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+const courseFilter = document.getElementById('courseFilter');
+const calGrid = document.getElementById('calGrid');
+const calMonth = document.getElementById('calMonth');
+const classList = document.getElementById('classList');
+const prevM = document.getElementById('prevM');
+const nextM = document.getElementById('nextM');
+const clearBtn = document.getElementById('clearBtn');
+
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dayNames = ['S','M','T','W','T','F','S'];
+
+let currentDate = new Date(2026, 3);
+let selectedDate = null;
+
+const sessions = [
+  { date: '2026-04-21', time: '14:00', course: 'Mathematics', mentor: 'Anand Kumar', status: 'present' },
+  { date: '2026-04-21', time: '15:30', course: 'Physics', mentor: 'Sneha Rao', status: 'present' },
+  { date: '2026-04-22', time: '09:00', course: 'Mathematics', mentor: 'Anand Kumar', status: 'present' },
+  { date: '2026-04-23', time: '10:30', course: 'Physics', mentor: 'Sneha Rao', status: 'absent' },
+  { date: '2026-04-24', time: '14:00', course: 'Mathematics', mentor: 'Anand Kumar', status: 'present' },
+  { date: '2026-04-25', time: '09:00', course: 'Mathematics', mentor: 'Anand Kumar', status: 'scheduled' },
+  { date: '2026-04-25', time: '10:30', course: 'Physics', mentor: 'Sneha Rao', status: 'scheduled' },
+  { date: '2026-04-26', time: '09:00', course: 'Mathematics', mentor: 'Anand Kumar', status: 'scheduled' },
+  { date: '2026-04-28', time: '10:30', course: 'Mathematics', mentor: 'Anand Kumar', status: 'scheduled' },
+];
+
+function renderCalendar() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  calMonth.textContent = months[month].slice(0,3);
+
+  const first = new Date(year, month, 1);
+  const last = new Date(year, month + 1, 0);
+
+  calGrid.innerHTML = '';
+
+  dayNames.forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'day-header';
+    h.textContent = d;
+    calGrid.appendChild(h);
+  });
+
+  for (let i = 0; i < first.getDay(); i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell other';
+    calGrid.appendChild(cell);
+  }
+
+  for (let date = 1; date <= last.getDate(); date++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+    cell.textContent = date;
+
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+    const daySessions = sessions.filter(s => s.date === dateStr);
+
+    if (daySessions.length > 0) {
+      const statuses = new Set(daySessions.map(s => s.status));
+      const nextClass = sessions.filter(s => s.status === 'scheduled').sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+
+      if (nextClass && nextClass.date === dateStr) {
+        cell.classList.add('next');
+      } else if (statuses.has('absent')) {
+        cell.classList.add('absent');
+      } else if (statuses.has('present')) {
+        cell.classList.add('present');
+      }
+    }
+
+    cell.addEventListener('click', () => {
+      selectedDate = dateStr;
+      renderClasses();
+    });
+
+    calGrid.appendChild(cell);
+  }
+}
+
+function renderClasses() {
+  const now = new Date(2026, 3, 24);
+  const listTitle = document.getElementById('listTitle');
+  let filtered = [];
+
+  clearBtn.style.display = selectedDate ? 'block' : 'none';
+
+  if (selectedDate) {
+    const selectedDateObj = new Date(selectedDate);
+
+    if (selectedDateObj < now) {
+      // Past date: show attendance details
+      listTitle.textContent = 'Attendance Details';
+      filtered = sessions.filter(s => s.date === selectedDate);
+    } else {
+      // Future date: show upcoming scheduled classes
+      listTitle.textContent = 'Scheduled Classes';
+      filtered = sessions.filter(s => s.date === selectedDate && s.status === 'scheduled');
+    }
+  } else {
+    // No date selected: show all upcoming classes
+    listTitle.textContent = 'Upcoming Classes';
+    filtered = sessions.filter(s => new Date(s.date) >= now && s.status === 'scheduled');
+  }
+
+  if (courseFilter.value) {
+    filtered = filtered.filter(s => s.course === courseFilter.value);
+  }
+
+  filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  classList.innerHTML = filtered.length === 0 ? '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No classes</div>' : filtered.map(s => {
+    const isPast = new Date(s.date) < now;
+    return `
+      <div class="session-item">
+        <div class="session-info">
+          <div class="session-course">${s.course}</div>
+          <div class="session-time">${s.date.split('-')[2]} · ${s.time}</div>
+          <div class="session-mentor">${s.mentor}</div>
+        </div>
+        <div class="session-status ${isPast ? 'status-' + s.status : 'status-scheduled'}">${isPast ? (s.status === 'present' ? 'Present' : 'Absent') : 'Scheduled'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+prevM.addEventListener('click', () => {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  renderCalendar();
+});
+
+nextM.addEventListener('click', () => {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  renderCalendar();
+});
+
+courseFilter.addEventListener('change', () => renderClasses());
+
+clearBtn.addEventListener('click', () => {
+  selectedDate = null;
+  renderCalendar();
+  renderClasses();
+});
+
+renderCalendar();
+renderClasses();
+</script>
+</body>
+</html>
